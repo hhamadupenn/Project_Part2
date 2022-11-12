@@ -28,17 +28,30 @@ def process_order(order):
 
             # create new order
             new_order_obj = {}
+            fields.append('creator_id')
             if order.sell_amount < order_obj.buy_amount:
                 new_order_obj['creator_id'] = order_obj.id
                 new_order_obj['sender_pk'] = order_obj.sender_pk
                 new_order_obj['receiver_pk'] = order_obj.receiver_pk
                 new_order_obj['buy_currency'] = order_obj.buy_currency
                 new_order_obj['sell_currency'] = order_obj.sell_currency
-                
+                new_order_obj['buy_amount'] = (order_obj.buy_amount / order_obj.sell_amount) * (order_obj.sell_amount - order.buy_amount) 
+                new_order_obj['sell_amount'] = (order_obj.sell_amount - order.buy_amount)
+                child_order = Order(**{f:order[f] for f in fields})
+                session.add(child_order)
+                session.commit()
+            elif order.buy_amount > order_obj.sell_amount:
+                new_order_obj['creator_id'] = order.id
+                new_order_obj['sender_pk'] = order.sender_pk
+                new_order_obj['receiver_pk'] = order.receiver_pk
+                new_order_obj['buy_currency'] = order.buy_currency
+                new_order_obj['sell_currency'] = order.sell_currency
+                new_order_obj['buy_amount'] = (order.buy_amount - order_obj.sell_amount)
+                new_order_obj['sell_amount'] = (order.sell_amount / order.buy_amount) * (order.buy_amount - order.sell_amount)
+                child_order = Order(**{f:order[f] for f in fields})
+                session.add(child_order)
+                session.commit()
 
-                
-
-            
             return
 
 
