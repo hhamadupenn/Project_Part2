@@ -19,7 +19,7 @@ def process_order(order):
     orders = session.query(Order).filter(Order.filled == None).all() #Get all orders
     for existing_order in orders:
         if existing_order.filled == None and existing_order.buy_currency == order_obj.sell_currency and existing_order.sell_currency == order_obj.buy_currency and (existing_order.sell_amount / existing_order.buy_amount) >= (order_obj.buy_amount / order_obj.sell_amount):
-            time_stamp = datetime.utcnow
+            time_stamp = datetime.now()
             existing_order.filled = time_stamp
             order_obj.filled = time_stamp
             order_obj.counterparty_id = existing_order.id
@@ -30,6 +30,7 @@ def process_order(order):
             new_order_obj = {}
             fields.append('creator_id')
             if existing_order.buy_amount < order_obj.sell_amount:
+                new_order_obj = order.copy()
                 new_order_obj['creator_id'] = order_obj.id
                 new_order_obj['sender_pk'] = order_obj.sender_pk
                 new_order_obj['receiver_pk'] = order_obj.receiver_pk
