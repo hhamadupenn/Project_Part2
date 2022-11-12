@@ -29,7 +29,7 @@ def process_order(order):
             # create new order
             new_order_obj = {}
             fields.append('creator_id')
-            if existing_order.buy_amount <= order_obj.sell_amount:
+            if existing_order.buy_amount < order_obj.sell_amount:
                 new_order_obj = order.copy()
                 new_order_obj['creator_id'] = order_obj.id
                 new_order_obj['sender_pk'] = order_obj.sender_pk
