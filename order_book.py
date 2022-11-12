@@ -47,10 +47,8 @@ def process_order(order):
                 new_order_obj['receiver_pk'] = existing_order.receiver_pk
                 new_order_obj['buy_currency'] = existing_order.buy_currency
                 new_order_obj['sell_currency'] = existing_order.sell_currency
-                #new_order_obj['buy_amount'] = (existing_order.buy_amount - order_obj.sell_amount)
-                #new_order_obj['sell_amount'] = (existing_order.sell_amount / existing_order.buy_amount) * (existing_order.buy_amount - existing_order.sell_amount)
-                new_order_obj['sell_amount'] = (existing_order.sell_amount - order_obj.buy_amount)
-                new_order_obj['buy_amount'] = (existing_order.buy_amount / existing_order.sell_amount) * (existing_order.sell_amount - order.buy_amount)
+                new_order_obj['buy_amount'] = (existing_order.buy_amount - order_obj.sell_amount)
+                new_order_obj['sell_amount'] = (existing_order.sell_amount / existing_order.buy_amount) * (existing_order.buy_amount - existing_order.sell_amount)
                 child_order = Order(**{f:new_order_obj[f] for f in fields})
                 session.add(child_order)
                 session.commit()
